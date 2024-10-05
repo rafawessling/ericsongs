@@ -7,7 +7,7 @@ export const SignIn = () => {
         <main className="flex flex-col lg:flex-row-reverse items-center w-screen min-h-dvh text-zinc-50 bg-primary">
             <section className="flex flex-col items-center gap-16 w-full relative lg:w-3/5 lg:h-screen lg:bg-secondary lg:rounded-l-[80px]">
                 <img
-                    className="z-0 absolute t-0 w-full h-40 min-[390px]:min-h-52 max-h-56 object-cover md:max-h-64 lg:max-h-[340px] 2xl:max-h-[400px] lg:rounded-tl-[80px]"
+                    className="z-0 absolute t-0 w-full max-h-40 min-[390px]:max-h-56 object-cover md:max-h-64 lg:max-h-[340px] 2xl:max-h-[400px] lg:rounded-tl-[80px]"
                     src={background}
                     alt="Background"
                 />
