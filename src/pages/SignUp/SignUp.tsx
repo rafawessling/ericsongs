@@ -1,6 +1,6 @@
 import { Form } from '../../components/Form/Form';
 import logo from '../../assets/logo.svg';
-import background from '../../assets/signUpBackground.png';
+import background from '../../assets/signUpBackground.svg';
 
 export const SignUp = () => {
     return (
