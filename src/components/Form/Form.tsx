@@ -63,7 +63,7 @@ export const Form = ({ type, title, subtitle, className }: FormProps) => {
                     />
                 )}
             </div>
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit">{title}</Button>
             <p className="text-center">
                 {isSignUp ? 'Do not have an account? ' : 'Already have an account? '}{' '}
                 <span

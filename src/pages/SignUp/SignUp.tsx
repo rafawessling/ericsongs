@@ -6,7 +6,7 @@ export const SignUp = () => {
     return (
         <main className="flex flex-col justify-center min-[390px]:justify-start lg:justify-center gap-4 2xl:gap-6 p-6 items-center w-screen min-h-dvh text-zinc-50 bg-primary">
             <img
-                className="absolute h-8 top-4 left-6 lg:top-6 lg:left-8"
+                className="absolute h-8 top-4 left-6 lg:top-8 lg:left-8"
                 src={logo}
                 alt="Ericsongs logo"
             />
