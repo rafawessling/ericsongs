@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.p-datatable-thead {
+    @apply border-b-2 border-zinc-300;
+}
+
+.p-column-header-content {
+    @apply flex gap-2 px-1 text-zinc-300 text-sm font-semibold whitespace-nowrap;
+}
+
+.p-datatable-emptymessage td {
+    @apply py-2;
+}
+
+.p-paginator-bottom.p-paginator.p-component {
+    @apply flex justify-center items-center gap-2 text-zinc-400;
+}
+
+.p-paginator-pages {
+    @apply flex gap-2;
+}
+
+.p-paginator-page.p-paginator-element.p-link {
+    @apply min-w-7 h-7 rounded-full border border-zinc-500 text-zinc-50;
+}
+
+.p-paginator-page.p-paginator-element.p-link.p-highlight {
+    @apply bg-blue-500;
+}
