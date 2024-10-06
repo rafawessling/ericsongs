@@ -33,7 +33,7 @@ export const Form = ({ type, title, subtitle, className }: FormProps) => {
 
     return (
         <form
-            className={`flex flex-col justify-start align-center gap-10 md:gap-12 z-20 w-full md:w-4/5 min-[390px]:py-8 ${className}`}
+            className={`flex flex-col justify-start align-center gap-10 md:gap-12 z-20 w-full md:w-4/5 ${className}`}
         >
             <div className="flex flex-col gap-2">
                 <Title>{title}</Title>

@@ -18,6 +18,10 @@ export default {
                 'gradient-signup':
                     'linear-gradient(0deg, rgba(27, 27, 29, 0) 0%, #1B1B1D 50%)',
             },
+            screens: {
+                'h-sm': { raw: '(min-height: 750px)' },
+                'max-w-389': { raw: '(max-width: 389px)' },
+            },
         },
     },
     plugins: [],
