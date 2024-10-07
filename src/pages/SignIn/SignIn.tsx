@@ -3,6 +3,17 @@ import logo from '../../assets/logo.svg';
 import background from '../../assets/signInBackground.svg';
 
 export const SignIn = () => {
+    const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+    const redirect_uri = 'http://localhost:5173/home';
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=user-read-private%20user-read-email&redirect_uri=${encodeURIComponent(
+            redirect_uri
+        )}`;
+    };
+
     return (
         <main className="flex flex-col lg:flex-row-reverse items-center w-screen min-h-dvh text-zinc-50 bg-primary">
             <section className="flex flex-col items-center gap-16 w-full relative lg:w-3/5 lg:h-screen lg:bg-secondary lg:rounded-l-[80px]">
@@ -33,6 +44,7 @@ export const SignIn = () => {
                     title="Sign In"
                     subtitle="Enter your credentials to access your account."
                     className="max-w-389:mt-0 mt-10 lg:mt-0"
+                    onSubmit={handleSubmit}
                 />
             </section>
         </main>
