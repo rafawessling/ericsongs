@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
     CustomTable,
     SpotifyArtist,
@@ -6,10 +8,11 @@ import {
 } from '../../components/CustomTable/CustomTable';
 import { Header } from '../../components/Header/Header';
 import { SideBar } from '../../components/SideBar/SideBar';
+import { clearAccessToken, setAccessToken } from '../../state/auth/authSlice';
 import { artistColumns } from '../../utils/tables/artistTable';
 import { songColumns } from '../../utils/tables/songTable';
-import tempImage from '../../assets/tempArtistImage.svg';
 import axios from 'axios';
+import tempImage from '../../assets/tempArtistImage.svg';
 
 export const Home = () => {
     const [search, setSearch] = useState('');
@@ -18,6 +21,8 @@ export const Home = () => {
     const [artistsData, setArtistsData] = useState([]);
     const [songsData, setSongsData] = useState([]);
     const [textSearching, setTextSearching] = useState('');
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
     const client_secret: string = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
@@ -45,17 +50,20 @@ export const Home = () => {
                         },
                     }
                 );
+                dispatch(setAccessToken(response.data.access_token));
                 localStorage.setItem('access_token', response.data.access_token);
+                window.history.replaceState({}, document.title, window.location.pathname);
             } catch (error: unknown) {
                 console.error(
                     'Error getting access token:',
                     (error as Error).message || error
                 );
+                navigate('/');
             }
         };
 
         fetchData();
-    }, []);
+    }, [client_id, client_secret, dispatch]);
 
     const handleSearch = async () => {
         const accessToken = localStorage.getItem('access_token');
@@ -151,6 +159,7 @@ export const Home = () => {
     }, []);
 
     const handleSignOut = () => {
+        dispatch(clearAccessToken());
         localStorage.removeItem('access_token');
         window.location.href = '/';
     };
