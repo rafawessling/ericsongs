@@ -1,4 +1,5 @@
-import { Artist, CustomColumnProps } from '../../components/CustomTable/CustomTable';
+import { CustomColumnProps } from '../../components/CustomTable/CustomTable';
+import { Artist } from '../../types/artist';
 
 export const artistColumns: CustomColumnProps<Artist>[] = [
     {
@@ -8,7 +9,7 @@ export const artistColumns: CustomColumnProps<Artist>[] = [
         body: rowData => (
             <div className="flex items-center gap-3 2xl:py-1">
                 <img
-                    className="h-14 rounded-full lg:h-16"
+                    className="h-14 w-14  object-cover rounded-full lg:h-16 lg:w-16"
                     src={rowData.image}
                     alt={rowData.name}
                 />

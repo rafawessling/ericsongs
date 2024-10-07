@@ -1,41 +1,8 @@
 import { Column } from 'primereact/column';
 import { DataTable, SortOrder } from 'primereact/datatable';
 import { FC } from 'react';
-
-export interface Image {
-    url: string;
-}
-
-export interface Album {
-    name: string;
-    release_date: string;
-    images: Image[];
-}
-
-export interface Artist {
-    images: Image[];
-    name: string;
-    popularity: number;
-}
-
-export interface SpotifyArtist {
-    images: Image[];
-    name: string;
-    popularity: number;
-}
-
-export interface SpotifySong {
-    name: string;
-    artists: SpotifyArtist[];
-    album: Album;
-}
-
-export interface Song {
-    name: string;
-    artists: Artist[];
-    album: Album;
-    releaseDate: string;
-}
+import { Artist } from '../../types/artist';
+import { Song } from '../../types/song';
 
 export interface CustomColumnProps<T> {
     field: string;

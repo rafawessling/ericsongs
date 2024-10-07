@@ -2,35 +2,31 @@ import { LogOut } from 'lucide-react';
 import { Input } from '../Input/Input';
 import { Title } from '../Title/Title';
 import logo from '../../assets/logo.svg';
+import { clearSearchQuery, setSearchQuery } from '../../state/search/searchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../state/store';
 
 interface HeaderProps {
-    search: string;
-    setSearch: (search: string) => void;
-    setArtistsData: (artistsData: []) => void;
-    setSongsData: (songsData: []) => void;
     handleSearch: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    setTextSearching: (textSearching: string) => void;
+    setTextSearching: (text: string) => void;
     handleSignOut: () => void;
 }
 
 export const Header = ({
-    search,
-    setSearch,
-    setArtistsData,
-    setSongsData,
     handleSearch,
     setTextSearching,
     handleSignOut,
 }: HeaderProps) => {
-    const onChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(event.target.value);
+    const dispatch = useDispatch();
+    const { query } = useSelector((state: RootState) => state.search);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(setSearchQuery(event.target.value));
     };
 
     const handleClearSearch = () => {
-        setSearch('');
+        dispatch(clearSearchQuery());
         setTextSearching('');
-        setArtistsData([]);
-        setSongsData([]);
     };
 
     return (
@@ -51,14 +47,14 @@ export const Header = ({
                 <Input
                     id="search"
                     placeholder="Search"
-                    value={search}
+                    value={query}
                     type="text"
                     startAdornment="Search"
-                    endAdornment={search ? 'X' : undefined}
+                    endAdornment={query ? 'X' : undefined}
                     onIconClick={handleClearSearch}
-                    onChange={onChangeFilter}
-                    className="lg:w-2/5 max-w-[600px] xl:w-[600px]"
+                    onChange={handleInputChange}
                     onKeyDown={handleSearch}
+                    className="lg:w-2/5 max-w-[600px] xl:w-[600px]"
                 />
                 <img className="hidden lg:block h-8" src={logo} alt="Ericsongs logo" />
             </section>

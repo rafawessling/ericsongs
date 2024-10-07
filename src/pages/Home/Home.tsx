@@ -1,133 +1,45 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {
-    CustomTable,
-    SpotifyArtist,
-    SpotifySong,
-} from '../../components/CustomTable/CustomTable';
+import { CustomTable } from '../../components/CustomTable/CustomTable';
 import { Header } from '../../components/Header/Header';
 import { SideBar } from '../../components/SideBar/SideBar';
-import { clearAccessToken, setAccessToken } from '../../state/auth/authSlice';
+import { clearAccessToken } from '../../state/auth/authSlice';
 import { artistColumns } from '../../utils/tables/artistTable';
 import { songColumns } from '../../utils/tables/songTable';
-import axios from 'axios';
-import tempImage from '../../assets/tempArtistImage.svg';
+import { AppDispatch, RootState } from '../../state/store';
+import { fetchAccessToken } from '../../state/auth/fetchAccessToken';
+import { fetchSearchResults } from '../../state/search/fetchSearchResults';
 
 export const Home = () => {
-    const [search, setSearch] = useState('');
     const [songsRows, setSongsRows] = useState(5);
     const [artistRows, setArtistRows] = useState(5);
-    const [artistsData, setArtistsData] = useState([]);
-    const [songsData, setSongsData] = useState([]);
     const [textSearching, setTextSearching] = useState('');
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
 
-    const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-    const client_secret: string = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
-
     useEffect(() => {
-        if (!client_id || !client_secret) {
-            console.error('Client ID or Client Secret is missing!');
-            return;
-        }
-
-        const data = new URLSearchParams();
-        data.append('grant_type', 'client_credentials');
-
-        const encodedCredentials = btoa(`${client_id}:${client_secret}`);
-
-        const fetchData = async () => {
-            try {
-                const response = await axios.post(
-                    'https://accounts.spotify.com/api/token',
-                    data,
-                    {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            Authorization: 'Basic ' + encodedCredentials,
-                        },
-                    }
-                );
-                dispatch(setAccessToken(response.data.access_token));
-                localStorage.setItem('access_token', response.data.access_token);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } catch (error: unknown) {
-                console.error(
-                    'Error getting access token:',
-                    (error as Error).message || error
-                );
+        dispatch(fetchAccessToken())
+            .unwrap()
+            .catch(error => {
+                console.error('Error fetching access token:', error);
                 navigate('/');
-            }
-        };
-
-        fetchData();
-    }, [client_id, client_secret, dispatch]);
-
-    const handleSearch = async () => {
-        const accessToken = localStorage.getItem('access_token');
-
-        try {
-            const artistsResponse = await axios.get(
-                `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-                    search
-                )}&type=artist&limit=30`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
-            );
-
-            const artists = artistsResponse.data.artists.items.map(
-                (artist: SpotifyArtist) => ({
-                    image: artist.images[0]?.url || tempImage,
-                    name: artist.name,
-                    occupation: 'Artist',
-                    popularity: artist.popularity,
-                })
-            );
-            setArtistsData(artists);
-
-            const songsResponse = await axios.get(
-                `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-                    search
-                )}&type=track&limit=30`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
-            );
-
-            const songs = songsResponse.data.tracks.items.map((song: SpotifySong) => {
-                const releaseDate = new Date(song.album.release_date);
-                const formattedDate = releaseDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                });
-
-                return {
-                    name: song.name,
-                    artists: song.artists.map((artist: SpotifyArtist) => ({
-                        images: artist.images,
-                        name: artist.name,
-                        popularity: artist.popularity,
-                    })),
-                    album: {
-                        name: song.album.name,
-                        release_date: song.album.release_date,
-                        images: song.album.images,
-                    },
-                    releaseDate: formattedDate,
-                };
             });
-            setSongsData(songs);
-            setTextSearching(search);
-        } catch (error) {
-            console.error(error);
+    }, [dispatch, navigate]);
+
+    const { accessToken } = useSelector((state: RootState) => state.auth);
+    const { query, artistsData, songsData } = useSelector(
+        (state: RootState) => state.search
+    );
+
+    const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter' && query.trim()) {
+            if (accessToken) {
+                dispatch(fetchSearchResults({ query, accessToken }));
+                setTextSearching(query);
+            } else {
+                console.error('No access token available.');
+            }
         }
     };
 
@@ -169,10 +81,6 @@ export const Home = () => {
             <SideBar handleSignOut={handleSignOut} />
             <section className="flex flex-col gap-6 w-full px-5 pt-3 pb-16 lg:p-8 text-zinc-50">
                 <Header
-                    search={search}
-                    setSearch={setSearch}
-                    setArtistsData={setArtistsData}
-                    setSongsData={setSongsData}
                     handleSearch={handleSearch}
                     setTextSearching={setTextSearching}
                     handleSignOut={handleSignOut}
@@ -182,9 +90,7 @@ export const Home = () => {
                 </h3>
                 <section className="flex flex-col justify-center lg:flex-row gap-6 lg:gap-8 xl:gap-16">
                     <section className="flex flex-col gap-2 z-20 w-full lg:w-2/5 xl:w-2/6">
-                        <h3 className="text-xl lg:text-2xl">
-                            Artists - {artistsData.length} found
-                        </h3>
+                        <h3 className="text-xl lg:text-2xl">Artists</h3>
                         <CustomTable
                             className="flex flex-col gap-3 bg-zinc-800 p-2 lg:px-4 rounded-xl"
                             value={artistsData}
@@ -198,9 +104,7 @@ export const Home = () => {
                         />
                     </section>
                     <section className="flex flex-col gap-2 z-20 lg:w-3/5">
-                        <h3 className="text-xl lg:text-2xl">
-                            Songs - {songsData.length} found
-                        </h3>
+                        <h3 className="text-xl lg:text-2xl">Songs</h3>
                         <CustomTable
                             className="flex flex-col gap-2 lg:py-2"
                             value={songsData}

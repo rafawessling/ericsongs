@@ -36,7 +36,8 @@ export const Input = ({
                 id={props.id}
                 value={props.value?.toString()}
                 placeholder={props.placeholder}
-                onKeyDown={event => event.key === 'Enter' && onKeyDown?.(event)}
+                onKeyDown={onKeyDown}
+                autoComplete="off"
                 className={`${startAdornment ? 'pl-12' : ''} ${
                     endAdornment ? 'pr-12' : ''
                 } w-full py-2.5 px-4 font-light rounded-3xl text-zinc-50 bg-gray-800 placeholder:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-gray-700`}
