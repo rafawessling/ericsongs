@@ -12,9 +12,9 @@ export const songColumns: CustomColumnProps<Song>[] = [
                     <Music />
                 </div>
                 <div className="flex flex-col w-3/4">
-                    <h4 className="truncate w-full">{rowData.title}</h4>
+                    <h4 className="truncate w-full">{rowData.name}</h4>
                     <span className="text-zinc-400 font-light truncate w-full">
-                        {rowData.artist}
+                        {rowData.artists.map(artist => artist.name).join(', ')}
                     </span>
                 </div>
             </div>
@@ -26,10 +26,13 @@ export const songColumns: CustomColumnProps<Song>[] = [
         header: 'Album',
         sortable: true,
         body: rowData => (
-            <span className="font-light truncate w-full">{rowData.album}</span>
+            <div className="truncate w-11/12">
+                <span className="font-light w-full">{rowData.album.name}</span>
+            </div>
         ),
         style: {
             width: '25%',
+            maxWidth: '12rem',
             padding: '0.5rem 1rem 0.5rem 0.5rem',
         },
     },

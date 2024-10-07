@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button/Button';
 import { Input } from '../Input/Input';
 import { Title } from '../Title/Title';
@@ -9,13 +8,14 @@ interface FormProps {
     title: string;
     subtitle: string;
     className?: string;
+    onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export const Form = ({ type, title, subtitle, className }: FormProps) => {
+export const Form = ({ type, title, subtitle, className, onSubmit }: FormProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const navigate = useNavigate();
     const isSignUp = type === 'signup';
+    const spotifySignUpUrl = 'https://www.spotify.com/signup';
 
     const handlePassword = (
         setPassword: React.Dispatch<React.SetStateAction<boolean>>
@@ -23,16 +23,9 @@ export const Form = ({ type, title, subtitle, className }: FormProps) => {
         return () => setPassword(prevState => !prevState);
     };
 
-    const handleNavigation = () => {
-        if (isSignUp) {
-            navigate('/');
-        } else {
-            navigate('/signup');
-        }
-    };
-
     return (
         <form
+            onSubmit={onSubmit}
             className={`flex flex-col justify-start align-center gap-10 md:gap-12 z-20 w-full md:w-4/5 ${className}`}
         >
             <div className="flex flex-col gap-2">
@@ -64,15 +57,19 @@ export const Form = ({ type, title, subtitle, className }: FormProps) => {
                 )}
             </div>
             <Button type="submit">{title}</Button>
-            <p className="text-center">
-                {isSignUp ? 'Do not have an account? ' : 'Already have an account? '}{' '}
-                <span
-                    onClick={handleNavigation}
+            <div className="flex flex-col items-center justify-center">
+                <p className="text-center">
+                    {isSignUp ? 'Already have an account? ' : 'Do not have an account? '}{' '}
+                </p>
+                <a
+                    href={spotifySignUpUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="py-3 px-1 cursor-pointer text-blue-500 underline"
                 >
-                    {isSignUp ? 'Sign In' : 'Sign Up'}
-                </span>
-            </p>
+                    Create an account on Spotify.
+                </a>
+            </div>
         </form>
     );
 };

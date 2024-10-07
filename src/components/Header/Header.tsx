@@ -6,18 +6,41 @@ import logo from '../../assets/logo.svg';
 interface HeaderProps {
     search: string;
     setSearch: (search: string) => void;
+    setArtistsData: (artistsData: []) => void;
+    setSongsData: (songsData: []) => void;
+    handleSearch: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    setTextSearching: (textSearching: string) => void;
+    handleSignOut: () => void;
 }
 
-export const Header = ({ search, setSearch }: HeaderProps) => {
+export const Header = ({
+    search,
+    setSearch,
+    setArtistsData,
+    setSongsData,
+    handleSearch,
+    setTextSearching,
+    handleSignOut,
+}: HeaderProps) => {
     const onChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(event.target.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearch('');
+        setTextSearching('');
+        setArtistsData([]);
+        setSongsData([]);
     };
 
     return (
         <>
             <section className="flex justify-between items-center lg:hidden">
                 <img className="h-8" src={logo} alt="Ericsongs logo" />
-                <div className="flex justify-center items-center w-11 h-11 -mr-2">
+                <div
+                    className="flex justify-center items-center w-11 h-11 -mr-2"
+                    onClick={handleSignOut}
+                >
                     <LogOut className="size-7 text-zinc-300" />
                 </div>
             </section>
@@ -31,9 +54,11 @@ export const Header = ({ search, setSearch }: HeaderProps) => {
                     value={search}
                     type="text"
                     startAdornment="Search"
-                    endAdornment="X"
+                    endAdornment={search ? 'X' : undefined}
+                    onIconClick={handleClearSearch}
                     onChange={onChangeFilter}
                     className="lg:w-2/5 max-w-[600px] xl:w-[600px]"
+                    onKeyDown={handleSearch}
                 />
                 <img className="hidden lg:block h-8" src={logo} alt="Ericsongs logo" />
             </section>
