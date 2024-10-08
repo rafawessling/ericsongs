@@ -36,7 +36,10 @@ const searchSlice = createSlice({
             .addCase(fetchArtists.fulfilled, (state, action) => {
                 state.loading = false;
                 state.artistsData = action.payload.artists;
-                state.totalArtists = action.payload.totalArtists;
+                state.totalArtists =
+                    action.payload.totalArtists < 1000
+                        ? action.payload.totalArtists
+                        : 990;
             })
             .addCase(fetchArtists.rejected, (state, action) => {
                 state.loading = false;
@@ -50,7 +53,8 @@ const searchSlice = createSlice({
             .addCase(fetchSongs.fulfilled, (state, action) => {
                 state.loading = false;
                 state.songsData = action.payload.songs;
-                state.totalSongs = action.payload.totalSongs;
+                state.totalSongs =
+                    action.payload.totalSongs < 1000 ? action.payload.totalSongs : 990;
             })
             .addCase(fetchSongs.rejected, (state, action) => {
                 state.loading = false;
