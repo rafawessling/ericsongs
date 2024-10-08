@@ -11,7 +11,7 @@ export const SideBar = ({ handleSignOut }: SideBarProps) => {
                 <House className="size-7 text-blue-500" />
             </div>
             <div
-                className="flex justify-center items-center w-full h-11"
+                className="flex justify-center items-center w-full h-11 cursor-pointer"
                 onClick={handleSignOut}
             >
                 <LogOut className="size-6 text-zinc-300" />

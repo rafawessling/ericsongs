@@ -11,9 +11,11 @@ export const SignInContent = () => {
     const hasFetchedToken = useRef(false);
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
+
     const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
     const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
     const spotifySignUpUrl = 'https://www.spotify.com/signup';
+
     const { loading, error, isLoggedIn } = useSelector((state: RootState) => state.auth);
 
     const handleSubmit = () => {

@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import { artistColumns } from '../../utils/tables/artistTable';
 import { songColumns } from '../../utils/tables/songTable';
 import { useNavigate } from 'react-router-dom';
+import background from '../../assets/signUpBackground.svg';
 
 export const Home = () => {
     const [songsRows, setSongsRows] = useState(5);
@@ -116,8 +117,13 @@ export const Home = () => {
                         />
                     </section>
                 </section>
-                <div className="fixed bottom-0 left-0 z-10 w-full h-44 bg-gradient-home"></div>
             </section>
+            <div className="flex justify-center items-start z-10 fixed bottom-24 w-full h-24 md:h-44 lg:h-60 lg:bottom-32 bg-gradient-signup"></div>
+            <img
+                className="z-0 fixed bottom-0 w-full min-h-36 max-h-56 object-cover md:max-h-64 lg:max-h-72 opacity-30"
+                src={background}
+                alt="Background"
+            />
         </main>
     );
 };
