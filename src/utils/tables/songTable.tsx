@@ -1,6 +1,6 @@
 import { Music } from 'lucide-react';
-import { CustomColumnProps } from '../../components/CustomTable/CustomTable';
 import { Song } from '../../types/song';
+import { CustomColumnProps } from '../../components/CustomTable/CustomTableTypes';
 
 export const songColumns: CustomColumnProps<Song>[] = [
     {

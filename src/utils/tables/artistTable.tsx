@@ -1,4 +1,4 @@
-import { CustomColumnProps } from '../../components/CustomTable/CustomTable';
+import { CustomColumnProps } from '../../components/CustomTable/CustomTableTypes';
 import { Artist } from '../../types/artist';
 
 export const artistColumns: CustomColumnProps<Artist>[] = [

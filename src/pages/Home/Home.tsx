@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { CustomTable } from '../../components/CustomTable/CustomTable';
 import { Header } from '../../components/Header/Header';
 import { Loading } from '../../components/Loading/Loading';
-import { SideBar } from '../../components/SideBar/Sidebar';
+import { SideBar } from '../../components/SideBar/SideBar';
+import { useSearchResults } from '../../hooks/useSearchResults';
 import { signout } from '../../store/auth/authSlice';
 import { AppDispatch, RootState } from '../../store/store';
 import { artistColumns } from '../../utils/tables/artistTable';
 import { songColumns } from '../../utils/tables/songTable';
-import { useSearchResults } from '../../hooks/useSearchResults';
 import background from '../../assets/signUpBackground.svg';
 
 export const Home = () => {
