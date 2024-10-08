@@ -30,7 +30,7 @@ export const artistColumns: CustomColumnProps<Artist>[] = [
         body: rowData => <span>{rowData.popularity}</span>,
         style: {
             width: '25%',
-            padding: '0.5rem 0 0.5rem 1rem',
+            padding: '0.5rem 0 0.5rem 0.2rem',
             textAlign: 'center',
         },
     },

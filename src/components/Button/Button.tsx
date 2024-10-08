@@ -1,8 +1,4 @@
-interface ButtonProps {
-    children: string;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    className?: string;
-}
+import { ButtonProps } from './ButtonTypes';
 
 export const Button = ({ children, onClick, className }: ButtonProps) => {
     return (

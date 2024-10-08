@@ -1,20 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { fetchSearchResults } from './fetchSearchResults';
-import { SpotifyArtist } from '../../types/artist';
-import { SpotifySong } from '../../types/song';
-
-interface SearchState {
-    query: string;
-    artistsData: SpotifyArtist[];
-    songsData: SpotifySong[];
-    loading: boolean;
-    error: string | null;
-}
+import { fetchArtists, fetchSongs } from './fetchSearchResults';
+import { SearchState } from './searchTypes';
 
 const initialState: SearchState = {
     query: '',
     artistsData: [],
     songsData: [],
+    totalArtists: 0,
+    totalSongs: 0,
     loading: false,
     error: null,
 };
@@ -30,20 +23,36 @@ const searchSlice = createSlice({
             state.query = '';
             state.artistsData = [];
             state.songsData = [];
+            state.totalArtists = 0;
+            state.totalSongs = 0;
         },
     },
     extraReducers: builder => {
         builder
-            .addCase(fetchSearchResults.pending, state => {
+            .addCase(fetchArtists.pending, state => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchSearchResults.fulfilled, (state, action) => {
+            .addCase(fetchArtists.fulfilled, (state, action) => {
                 state.loading = false;
                 state.artistsData = action.payload.artists;
-                state.songsData = action.payload.songs;
+                state.totalArtists = action.payload.totalArtists;
             })
-            .addCase(fetchSearchResults.rejected, (state, action) => {
+            .addCase(fetchArtists.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
+        builder
+            .addCase(fetchSongs.pending, state => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchSongs.fulfilled, (state, action) => {
+                state.loading = false;
+                state.songsData = action.payload.songs;
+                state.totalSongs = action.payload.totalSongs;
+            })
+            .addCase(fetchSongs.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

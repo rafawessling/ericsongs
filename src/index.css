@@ -14,8 +14,8 @@
     @apply py-2;
 }
 
-.p-paginator-bottom.p-paginator.p-component {
-    @apply flex justify-center items-center gap-2 text-zinc-400;
+.p-paginator.p-component {
+    @apply flex justify-center items-center gap-2 text-zinc-300;
 }
 
 .p-paginator-pages {
@@ -23,7 +23,7 @@
 }
 
 .p-paginator-page.p-paginator-element.p-link {
-    @apply min-w-7 h-7 rounded-full border border-zinc-500 text-zinc-50;
+    @apply min-w-7 h-7 rounded-full border border-zinc-400 text-zinc-50;
 }
 
 .p-paginator-page.p-paginator-element.p-link.p-highlight {

@@ -1,16 +1,11 @@
 import { LogOut } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearSearchQuery, setSearchQuery } from '../../store/search/searchSlice';
+import { RootState } from '../../store/store';
 import { Input } from '../Input/Input';
 import { Title } from '../Title/Title';
-import { clearSearchQuery, setSearchQuery } from '../../store/search/searchSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { HeaderProps } from './HeaderTypes';
 import logo from '../../assets/logo.svg';
-
-interface HeaderProps {
-    handleSearch: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    setTextSearching: (text: string) => void;
-    handleSignOut: () => void;
-}
 
 export const Header = ({
     handleSearch,

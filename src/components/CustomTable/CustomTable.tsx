@@ -1,28 +1,8 @@
 import { Column } from 'primereact/column';
-import { DataTable, SortOrder } from 'primereact/datatable';
+import { DataTable } from 'primereact/datatable';
+import { Paginator } from 'primereact/paginator';
 import { FC } from 'react';
-import { Artist } from '../../types/artist';
-import { Song } from '../../types/song';
-
-export interface CustomColumnProps<T> {
-    field: string;
-    header: string;
-    sortable: boolean;
-    body?: ((rowData: T) => JSX.Element) | undefined;
-    style: React.CSSProperties;
-}
-
-interface CustomTableProps {
-    className: string;
-    value: object[];
-    sortField: string;
-    sortOrder: SortOrder;
-    emptyMessage: string;
-    removableSort: boolean;
-    paginator: boolean;
-    rows: number;
-    columns: (CustomColumnProps<Artist> | CustomColumnProps<Song>)[];
-}
+import { CustomTableProps } from './CustomTableTypes';
 
 export const CustomTable: FC<CustomTableProps> = ({
     className,
@@ -31,31 +11,44 @@ export const CustomTable: FC<CustomTableProps> = ({
     sortOrder,
     emptyMessage,
     removableSort,
-    paginator,
     rows,
     columns,
+    totalRecords,
+    handlePageChange,
+    first,
 }) => {
     return (
-        <DataTable
-            className={className}
-            value={value}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            emptyMessage={emptyMessage}
-            removableSort={removableSort}
-            paginator={paginator}
-            rows={rows}
-        >
-            {columns.map((column, index) => (
-                <Column
-                    key={index}
-                    field={column.field}
-                    header={column.header}
-                    sortable={column.sortable}
-                    body={column.body}
-                    style={column.style}
+        <>
+            <DataTable
+                className={className}
+                value={value}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                emptyMessage={emptyMessage}
+                removableSort={removableSort}
+                rows={rows}
+                totalRecords={totalRecords}
+                onPage={handlePageChange}
+            >
+                {columns.map((column, index) => (
+                    <Column
+                        key={index}
+                        field={column.field}
+                        header={column.header}
+                        sortable={column.sortable}
+                        body={column.body}
+                        style={column.style}
+                    />
+                ))}
+            </DataTable>
+            {totalRecords > 0 && (
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={totalRecords}
+                    onPageChange={handlePageChange}
                 />
-            ))}
-        </DataTable>
+            )}
+        </>
     );
 };

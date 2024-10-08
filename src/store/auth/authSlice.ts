@@ -1,16 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchAccessToken } from './fetchAccessToken';
 import { refreshAccessToken } from './tokenRefresh';
-
-interface AuthState {
-    isLoggedIn: boolean;
-    accessToken: string | null;
-    refreshToken: string | null;
-    expiresIn: number | null;
-    tokenTimestamp: number | null;
-    loading: boolean;
-    error: string | null;
-}
+import { AuthState } from './authTypes';
 
 const initialState: AuthState = {
     isLoggedIn: !!localStorage.getItem('accessToken'),
@@ -91,7 +82,8 @@ const authSlice = createSlice({
                 localStorage.removeItem('refreshToken');
                 localStorage.removeItem('expiresIn');
                 localStorage.removeItem('tokenTimestamp');
-            })
+            });
+        builder
             .addCase(refreshAccessToken.pending, state => {
                 state.loading = true;
                 state.error = null;

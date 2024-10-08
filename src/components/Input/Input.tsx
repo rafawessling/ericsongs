@@ -1,14 +1,6 @@
 import { InputText } from 'primereact/inputtext';
-import { ComponentProps } from 'react';
 import { inputIcons } from '../../utils/inputIcons';
-
-interface InputProps extends ComponentProps<'input'> {
-    startAdornment?: keyof typeof inputIcons;
-    endAdornment?: keyof typeof inputIcons;
-    onIconClick?: () => void;
-    onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    className?: string;
-}
+import { InputProps } from './InputTypes';
 
 export const Input = ({
     startAdornment,

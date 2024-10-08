@@ -1,66 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { CustomTable } from '../../components/CustomTable/CustomTable';
 import { Header } from '../../components/Header/Header';
 import { Loading } from '../../components/Loading/Loading';
-import { SideBar } from '../../components/SideBar/SideBar';
+import { SideBar } from '../../components/SideBar/Sidebar';
 import { signout } from '../../store/auth/authSlice';
-import { fetchSearchResults } from '../../store/search/fetchSearchResults';
 import { AppDispatch, RootState } from '../../store/store';
 import { artistColumns } from '../../utils/tables/artistTable';
 import { songColumns } from '../../utils/tables/songTable';
-import { useNavigate } from 'react-router-dom';
+import { useSearchResults } from '../../hooks/useSearchResults';
 import background from '../../assets/signUpBackground.svg';
 
 export const Home = () => {
-    const [songsRows, setSongsRows] = useState(5);
-    const [artistRows, setArtistRows] = useState(5);
-    const [textSearching, setTextSearching] = useState('');
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
+    const {
+        artistFirst,
+        songFirst,
+        textSearching,
+        loading,
+        error,
+        artistsData,
+        songsData,
+        totalArtists,
+        totalSongs,
+        handleSearch,
+        setTextSearching,
+        handleChangeArtistPage,
+        handleChangeSongPage,
+    } = useSearchResults();
 
-    const { accessToken, isLoggedIn } = useSelector((state: RootState) => state.auth);
-    const { query, artistsData, songsData, loading, error } = useSelector(
-        (state: RootState) => state.search
-    );
-
-    const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && query.trim()) {
-            if (accessToken) {
-                dispatch(fetchSearchResults({ query }));
-                setTextSearching(query);
-            } else {
-                console.error('No access token available.');
-            }
-        }
-    };
-
-    useEffect(() => {
-        function updateRows() {
-            const isLargeScreen = window.innerWidth > 1024;
-            const isTallScreen = window.innerHeight >= 900;
-            const isTallerScreen = window.innerHeight >= 1050;
-
-            if (isLargeScreen && isTallerScreen) {
-                setSongsRows(10);
-                setArtistRows(8);
-            } else if (isLargeScreen && isTallScreen) {
-                setSongsRows(8);
-                setArtistRows(7);
-            } else if (isLargeScreen) {
-                setSongsRows(6);
-                setArtistRows(5);
-            } else {
-                setSongsRows(5);
-                setArtistRows(5);
-            }
-        }
-
-        window.addEventListener('resize', updateRows);
-        updateRows();
-
-        return () => window.removeEventListener('resize', updateRows);
-    }, []);
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -74,10 +45,10 @@ export const Home = () => {
     };
 
     return (
-        <main className="flex min-h-dvh w-screen bg-primary">
+        <main className="flex min-h-dvh w-full bg-primary overflow-x-hidden relative">
             {loading && <Loading />}
             <SideBar handleSignOut={handleSignOut} />
-            <section className="flex flex-col gap-6 w-full px-5 pt-3 pb-16 lg:p-8 text-zinc-50">
+            <section className="flex flex-col gap-6 w-full px-5 pt-3 pb-16 lg:p-8 text-zinc-50 lg:ml-20">
                 <Header
                     handleSearch={handleSearch}
                     setTextSearching={setTextSearching}
@@ -87,7 +58,7 @@ export const Home = () => {
                     {textSearching && `Results for "${textSearching}"`}
                 </h3>
                 {error && <p className="text-lg text-center text-red-600">{error}</p>}
-                <section className="flex flex-col justify-center lg:flex-row gap-6 lg:gap-8 xl:gap-16">
+                <section className="flex flex-col justify-center lg:flex-row gap-6 lg:gap-8 xl:gap-16 overflow-y-auto">
                     <section className="flex flex-col gap-2 z-20 w-full lg:w-2/5 xl:w-2/6">
                         <h3 className="text-xl lg:text-2xl">Artists</h3>
                         <CustomTable
@@ -97,9 +68,11 @@ export const Home = () => {
                             sortOrder={1}
                             emptyMessage="No artists found."
                             removableSort
-                            paginator={artistsData.length > artistRows}
-                            rows={artistRows}
+                            rows={7}
                             columns={artistColumns}
+                            totalRecords={totalArtists}
+                            handlePageChange={handleChangeArtistPage}
+                            first={artistFirst}
                         />
                     </section>
                     <section className="flex flex-col gap-2 z-20 lg:w-3/5">
@@ -111,9 +84,11 @@ export const Home = () => {
                             sortOrder={1}
                             emptyMessage="No songs found."
                             removableSort
-                            paginator={songsData.length > songsRows}
-                            rows={songsRows}
+                            rows={8}
                             columns={songColumns}
+                            totalRecords={totalSongs}
+                            handlePageChange={handleChangeSongPage}
+                            first={songFirst}
                         />
                     </section>
                 </section>
