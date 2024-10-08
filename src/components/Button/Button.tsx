@@ -1,13 +1,14 @@
 interface ButtonProps {
     children: string;
-    type: 'button' | 'submit';
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    className?: string;
 }
 
-export const Button = ({ children, type }: ButtonProps) => {
+export const Button = ({ children, onClick, className }: ButtonProps) => {
     return (
         <button
-            type={type}
-            className="py-2.5 px-4 font-light rounded-3xl text-zinc-50 bg-blue-500 hover:bg-blue-600"
+            onClick={onClick}
+            className={`py-2.5 px-4 w-full rounded-3xl text-zinc-50 bg-blue-500 hover:bg-blue-600 ${className}`}
         >
             {children}
         </button>

@@ -1,17 +1,27 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { SpotifyArtist } from '../../types/artist';
 import { SpotifySong } from '../../types/song';
+import { isTokenExpired, refreshAccessToken } from '../auth/tokenRefresh';
+import { RootState } from '../store';
 import axios from 'axios';
 import tempArtistImage from '../../assets/tempArtistImage.svg';
 
 export const fetchSearchResults = createAsyncThunk(
     'search/fetchSearchResults',
-    async (
-        { query, accessToken }: { query: string; accessToken: string },
-        { rejectWithValue }
-    ) => {
+    async ({ query }: { query: string }, { dispatch, getState, rejectWithValue }) => {
+        const state = getState() as RootState;
+        let accessToken = state.auth.accessToken;
+
+        if (isTokenExpired()) {
+            try {
+                const refreshResult = await dispatch(refreshAccessToken()).unwrap();
+                accessToken = refreshResult.accessToken;
+            } catch (error) {
+                return rejectWithValue(`Failed to refresh token, error: ${error}`);
+            }
+        }
         if (!accessToken) {
-            return rejectWithValue('No access token found');
+            return rejectWithValue('No access token available');
         }
 
         try {
@@ -72,7 +82,7 @@ export const fetchSearchResults = createAsyncThunk(
 
             return { artists, songs };
         } catch (error) {
-            let errorMessage = 'Failed to fetch search results';
+            let errorMessage = 'Error fetching search results';
 
             if (axios.isAxiosError(error)) {
                 errorMessage =

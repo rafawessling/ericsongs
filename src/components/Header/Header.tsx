@@ -1,10 +1,10 @@
 import { LogOut } from 'lucide-react';
 import { Input } from '../Input/Input';
 import { Title } from '../Title/Title';
-import logo from '../../assets/logo.svg';
-import { clearSearchQuery, setSearchQuery } from '../../state/search/searchSlice';
+import { clearSearchQuery, setSearchQuery } from '../../store/search/searchSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../state/store';
+import { RootState } from '../../store/store';
+import logo from '../../assets/logo.svg';
 
 interface HeaderProps {
     handleSearch: (event: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -42,7 +42,7 @@ export const Header = ({
             </section>
             <section className="flex flex-col lg:flex-row justify-between items-center gap-6">
                 <Title>
-                    Hello, <span className="lg:text-blue-500">Joana</span>
+                    Hello, <span className="lg:text-blue-500">Music lover</span>
                 </Title>
                 <Input
                     id="search"

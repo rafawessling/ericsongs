@@ -3,16 +3,18 @@ import axios from 'axios';
 
 export const fetchAccessToken = createAsyncThunk(
     'auth/fetchAccessToken',
-    async (_, { rejectWithValue }) => {
+    async ({ code }: { code: string }, { rejectWithValue }) => {
         const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
         const client_secret: string = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+        const redirect_uri: string = import.meta.env.VITE_REDIRECT_URI;
 
-        if (!client_id || !client_secret) {
-            throw new Error('Client ID or Client Secret is missing!');
-        }
+        if (!client_id) throw new Error('client_id is missing!');
+        if (!client_secret) throw new Error('client_secret is missing!');
 
         const data = new URLSearchParams();
-        data.append('grant_type', 'client_credentials');
+        data.append('code', code);
+        data.append('redirect_uri', redirect_uri);
+        data.append('grant_type', 'authorization_code');
 
         const encodedCredentials = btoa(`${client_id}:${client_secret}`);
 
@@ -27,7 +29,14 @@ export const fetchAccessToken = createAsyncThunk(
                     },
                 }
             );
-            return response.data.access_token;
+
+            const {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                expires_in: expiresIn,
+            } = response.data;
+
+            return { accessToken, refreshToken, expiresIn };
         } catch (error) {
             let errorMessage = 'Error fetching access token';
 

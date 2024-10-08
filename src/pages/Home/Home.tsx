@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { CustomTable } from '../../components/CustomTable/CustomTable';
 import { Header } from '../../components/Header/Header';
+import { Loading } from '../../components/Loading/Loading';
 import { SideBar } from '../../components/SideBar/SideBar';
-import { clearAccessToken } from '../../state/auth/authSlice';
+import { signout } from '../../store/auth/authSlice';
+import { fetchSearchResults } from '../../store/search/fetchSearchResults';
+import { AppDispatch, RootState } from '../../store/store';
 import { artistColumns } from '../../utils/tables/artistTable';
 import { songColumns } from '../../utils/tables/songTable';
-import { AppDispatch, RootState } from '../../state/store';
-import { fetchAccessToken } from '../../state/auth/fetchAccessToken';
-import { fetchSearchResults } from '../../state/search/fetchSearchResults';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
     const [songsRows, setSongsRows] = useState(5);
@@ -18,24 +18,15 @@ export const Home = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        dispatch(fetchAccessToken())
-            .unwrap()
-            .catch(error => {
-                console.error('Error fetching access token:', error);
-                navigate('/');
-            });
-    }, [dispatch, navigate]);
-
-    const { accessToken } = useSelector((state: RootState) => state.auth);
-    const { query, artistsData, songsData } = useSelector(
+    const { accessToken, isLoggedIn } = useSelector((state: RootState) => state.auth);
+    const { query, artistsData, songsData, loading, error } = useSelector(
         (state: RootState) => state.search
     );
 
     const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter' && query.trim()) {
             if (accessToken) {
-                dispatch(fetchSearchResults({ query, accessToken }));
+                dispatch(fetchSearchResults({ query }));
                 setTextSearching(query);
             } else {
                 console.error('No access token available.');
@@ -70,14 +61,20 @@ export const Home = () => {
         return () => window.removeEventListener('resize', updateRows);
     }, []);
 
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/');
+        }
+    }, [isLoggedIn, navigate]);
+
     const handleSignOut = () => {
-        dispatch(clearAccessToken());
-        localStorage.removeItem('access_token');
-        window.location.href = '/';
+        dispatch(signout());
+        navigate('/');
     };
 
     return (
         <main className="flex min-h-dvh w-screen bg-primary">
+            {loading && <Loading />}
             <SideBar handleSignOut={handleSignOut} />
             <section className="flex flex-col gap-6 w-full px-5 pt-3 pb-16 lg:p-8 text-zinc-50">
                 <Header
@@ -86,8 +83,9 @@ export const Home = () => {
                     handleSignOut={handleSignOut}
                 />
                 <h3 className="text-xl lg:text-2xl text-center text-zinc-300">
-                    Results for "{textSearching}"
+                    {textSearching && `Results for "${textSearching}"`}
                 </h3>
+                {error && <p className="text-lg text-center text-red-600">{error}</p>}
                 <section className="flex flex-col justify-center lg:flex-row gap-6 lg:gap-8 xl:gap-16">
                     <section className="flex flex-col gap-2 z-20 w-full lg:w-2/5 xl:w-2/6">
                         <h3 className="text-xl lg:text-2xl">Artists</h3>
