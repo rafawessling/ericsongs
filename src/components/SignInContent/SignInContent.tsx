@@ -16,10 +16,12 @@ export const SignInContent = () => {
     const spotifySignUpUrl = 'https://www.spotify.com/signup';
     const { loading, error, isLoggedIn } = useSelector((state: RootState) => state.auth);
 
-    const handleSubmit = async () => {
-        window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=user-read-private%20user-read-email&redirect_uri=${encodeURIComponent(
+    const handleSubmit = () => {
+        const authorizationUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=user-read-private%20user-read-email&redirect_uri=${encodeURIComponent(
             redirect_uri
         )}`;
+
+        window.location.href = authorizationUrl;
     };
 
     useEffect(() => {
