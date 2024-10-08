@@ -9,6 +9,7 @@ export default {
             backgroundColor: {
                 primary: '#1B1B1D',
                 secondary: '#0C0C0E',
+                'loading-modal': 'rgba(27, 27, 29, 0.5)',
             },
             backgroundImage: {
                 'gradient-signin-mobile':
