@@ -33,6 +33,7 @@ const authSlice = createSlice({
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('expiresIn');
             localStorage.removeItem('tokenTimestamp');
+            localStorage.removeItem('codeVerifier');
         },
     },
     extraReducers: builder => {
@@ -82,6 +83,7 @@ const authSlice = createSlice({
                 localStorage.removeItem('refreshToken');
                 localStorage.removeItem('expiresIn');
                 localStorage.removeItem('tokenTimestamp');
+                localStorage.removeItem('codeVerifier');
             });
         builder
             .addCase(refreshAccessToken.pending, state => {

@@ -3,20 +3,21 @@ import axios from 'axios';
 
 export const fetchAccessToken = createAsyncThunk(
     'auth/fetchAccessToken',
-    async ({ code }: { code: string }, { rejectWithValue }) => {
+    async (
+        { code, codeVerifier }: { code: string; codeVerifier: string },
+        { rejectWithValue }
+    ) => {
         const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-        const client_secret: string = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
         const redirect_uri: string = import.meta.env.VITE_REDIRECT_URI;
 
         if (!client_id) throw new Error('client_id is missing!');
-        if (!client_secret) throw new Error('client_secret is missing!');
 
         const data = new URLSearchParams();
+        data.append('client_id', client_id);
+        data.append('grant_type', 'authorization_code');
         data.append('code', code);
         data.append('redirect_uri', redirect_uri);
-        data.append('grant_type', 'authorization_code');
-
-        const encodedCredentials = btoa(`${client_id}:${client_secret}`);
+        data.append('code_verifier', codeVerifier);
 
         try {
             const response = await axios.post(
@@ -25,7 +26,6 @@ export const fetchAccessToken = createAsyncThunk(
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        Authorization: 'Basic ' + encodedCredentials,
                     },
                 }
             );

@@ -38,7 +38,7 @@ const searchSlice = createSlice({
                 state.artistsData = action.payload.artists;
                 state.totalArtists =
                     action.payload.totalArtists < 1000
-                        ? action.payload.totalArtists
+                        ? action.payload?.totalArtists
                         : 990;
             })
             .addCase(fetchArtists.rejected, (state, action) => {

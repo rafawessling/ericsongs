@@ -1,27 +1,36 @@
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchAccessToken } from '../../store/auth/fetchAccessToken';
 import { AppDispatch, RootState } from '../../store/store';
-import { useEffect, useRef } from 'react';
-import { Title } from '../Title/Title';
+import { generateCodeChallenge, generateCodeVerifier } from '../../utils/authCodes';
 import { Button } from '../Button/Button';
 import { Loading } from '../Loading/Loading';
+import { Title } from '../Title/Title';
 
 export const SignInContent = () => {
     const hasFetchedToken = useRef(false);
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
 
-    const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-    const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
     const spotifySignUpUrl = 'https://www.spotify.com/signup';
 
     const { loading, error, isLoggedIn } = useSelector((state: RootState) => state.auth);
 
-    const handleSubmit = () => {
-        const authorizationUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=user-read-private%20user-read-email&redirect_uri=${encodeURIComponent(
+    const handleSubmit = async () => {
+        const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+        const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
+        const codeVerifier = generateCodeVerifier();
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
+        const scope = 'user-read-private user-read-email';
+
+        const authorizationUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(
             redirect_uri
+        )}&code_challenge_method=S256&code_challenge=${codeChallenge}&scope=${encodeURIComponent(
+            scope
         )}`;
+
+        localStorage.setItem('codeVerifier', codeVerifier);
 
         window.location.href = authorizationUrl;
     };
@@ -29,11 +38,12 @@ export const SignInContent = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
+        const codeVerifier = localStorage.getItem('codeVerifier');
 
         if (code && !isLoggedIn && !hasFetchedToken.current) {
             hasFetchedToken.current = true;
 
-            dispatch(fetchAccessToken({ code }))
+            dispatch(fetchAccessToken({ code, codeVerifier: codeVerifier! }))
                 .unwrap()
                 .then(() => {
                     params.delete('code');

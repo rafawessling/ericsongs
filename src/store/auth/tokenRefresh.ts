@@ -17,20 +17,16 @@ export const refreshAccessToken = createAsyncThunk(
     'auth/refreshAccessToken',
     async (_, { rejectWithValue }) => {
         const client_id: string = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-        const client_secret: string = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
 
         if (!client_id) throw new Error('client_id is missing!');
-        if (!client_secret) throw new Error('client_secret is missing!');
 
-        const refreshToken = localStorage.getItem('refresh_token');
-        if (!refreshToken) throw new Error('refresh_token is missing!');
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) throw new Error('refreshToken is missing!');
 
         const data = new URLSearchParams();
         data.append('grant_type', 'refresh_token');
         data.append('refresh_token', refreshToken);
         data.append('client_id', client_id);
-
-        const encodedCredentials = btoa(`${client_id}:${client_secret}`);
 
         try {
             const response = await axios.post(
@@ -39,7 +35,6 @@ export const refreshAccessToken = createAsyncThunk(
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        Authorization: 'Basic ' + encodedCredentials,
                     },
                 }
             );

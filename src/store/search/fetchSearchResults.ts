@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { SpotifyArtist } from '../../types/artist';
 import { SpotifySong } from '../../types/song';
+import { signout } from '../auth/authSlice';
 import { isTokenExpired, refreshAccessToken } from '../auth/tokenRefresh';
 import { RootState } from '../store';
 import { FetchProps } from './searchTypes';
@@ -21,7 +22,10 @@ export const fetchArtists = createAsyncThunk(
                 const refreshResult = await dispatch(refreshAccessToken()).unwrap();
                 accessToken = refreshResult.accessToken;
             } catch (error) {
-                return rejectWithValue(`Failed to refresh token, error: ${error}`);
+                dispatch(signout());
+                return rejectWithValue(
+                    `Failed to refresh token. Please sign in again. Error: ${error}.`
+                );
             }
         }
         if (!accessToken) {
@@ -50,7 +54,7 @@ export const fetchArtists = createAsyncThunk(
             );
 
             return {
-                artists,
+                artists: artists,
                 totalArtists: artistsResponse.data.artists.total,
             };
         } catch (error) {
@@ -82,7 +86,10 @@ export const fetchSongs = createAsyncThunk(
                 const refreshResult = await dispatch(refreshAccessToken()).unwrap();
                 accessToken = refreshResult.accessToken;
             } catch (error) {
-                return rejectWithValue(`Failed to refresh token, error: ${error}`);
+                dispatch(signout());
+                return rejectWithValue(
+                    `Failed to refresh token. Please sign in again. Error: ${error}.`
+                );
             }
         }
         if (!accessToken) {
