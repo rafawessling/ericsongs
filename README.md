@@ -59,23 +59,55 @@ This project is a single-page application for searching music artists and songs.
 
 ### 3. How to execute
 
--   Firstly, install the following tools: <a href="https://git-scm.com" target="_blank">Git</a>, <a href="https://nodejs.org/en/" target="_blank">Node.js</a>.
+1. Firstly, install the following tools:
 
--   Clone this repository:
+    - <a href="https://git-scm.com" target="_blank">Git</a>
+    - <a href="https://nodejs.org/en/" target="_blank">Node.js</a>
+
+2. Clone this repository:
 
     ```
     $ git clone git@github.com:rafawessling/ericsongs.git
     ```
 
--   Access the project folder on the terminal/cmd:
+3. Access the project folder on the terminal/cmd:
     ```
     $ cd ericsongs
     ```
--   Install the dependencies:
+4. Install the dependencies:
     ```
     $ npm install
     ```
--   Execute the application:
+5. Set up Spotify Developer Account and Application:
+
+    - Go to <a href="https://developer.spotify.com/dashboard/" target="_blank">Spotify Developer Dashboard</a> and log in (or create an account if you don’t have one).
+    - After logging in, click on **Create an App** to set up a new application.
+    - Fill in the required details, like the app name and description, and then click **Create**.
+    - Once your app is created, go to the **Settings** tab and find the Client ID.
+    - Under **Redirect URIs**, click **Add URI** and enter the following:
+
+        ```
+        http://localhost:5173/
+        ```
+
+6. Create your `.env` file:
+
+    - Copy the `.env.example` file and rename it to `.env`:
+
+        ```
+        $ cp .env.example .env
+        ```
+
+    - Open the `.env` file and add your Spotify credentials:
+
+        ```
+        VITE_SPOTIFY_CLIENT_ID=your_spotify_client_id_here
+        VITE_REDIRECT_URI=http://localhost:5173/
+        ```
+
+    - Replace **your_spotify_client_id_here** with the actual value from your **Spotify Developer Dashboard**.
+
+7. Run the application:
 
     ```
     $ npm run dev
